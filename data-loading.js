@@ -1,3 +1,6 @@
+dropdownOpened = false;
+const animals = ["Cats", "Dogs", "Parrots", "Hamsters"];
+
 function getAnimalType(animal) {
     switch (animal) {
         case 1: return "cat";

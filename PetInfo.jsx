@@ -1,12 +1,12 @@
-function App() {
+function PetInfoPage() {
   return (
     <div id="full-page" className="App">
     <Menu />
-    <PetsCatalog />
+    {/* <PetInfoSection /> */}
     </div>
   );
 }
 
 const container = document.getElementById('container');
 const root = ReactDOM.createRoot(container);
-root.render(<App />);
+root.render(<PetInfoPage />);

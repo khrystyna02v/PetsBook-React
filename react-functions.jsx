@@ -1,11 +1,19 @@
+function Submenu () {
+  const listItems = animals.map(a => <li key={a}>{a}</li>);
+  return (
+    <ul id="submenu-list">{listItems}</ul>
+  );
+}
+
 function Menu() {
     return (
       <section id="menu">
         <h1>Pets book</h1>
-        <ul>
-            <li>Pets</li>
-            <li>People</li>
-            <li>Predictions</li>
+        <ul id="menu-list">
+            <li>Pets Catalog</li>
+            <li>By type:</li>
+            <Submenu />
+            <li>Owners</li>
         </ul>
       </section>
     );
@@ -14,7 +22,7 @@ function Menu() {
 function PetInCatalog({ pet }) {
   return (
     <div className="pet-in-catalog" id={"pet_" + pet.petId}>
-      <img height="100px" width="100px" src={pet.photoPath} alt={pet.name} />
+      <img src={pet.photoPath || "default.png"} onError={(e) => { e.target.src ='default.png'; }} className="pet-img" alt={pet.name} />
       <h4>{pet.name}</h4>
       <p>{getAnimalType(pet.animalTypeId)}</p>
     </div>
@@ -50,7 +58,7 @@ function UploadPetsIntoCatalog() {
   if (pets.length === 0) return <div>No pets available</div>;
 
   return (
-    <div>
+    <div id="pets-catalog">
       {pets.map((p, idx) => (
         <PetInCatalog key={p.PetId ?? p.petId ?? p.id ?? idx} pet={p} />
       ))}
@@ -62,14 +70,19 @@ function PetsCatalog() {
   return (
     <section id="pets-page">
       <h2>Beautiful pets</h2>
-      <div className="pets-catalog">
-        <UploadPetsIntoCatalog />
-      </div>
+      <UploadPetsIntoCatalog />
     </section>
   );}
 
+// function PetInfoSection() {
+
+// }
 
 
 
-
-// PetInCatalog - додати альтернативне зображення/текст || ..
+//Сторінка тварини - інформація про неї
+//Сторінки під кожен вид тварини
+//Форма додавати тваринку + аплоадити картинку
+//Форма щоб едітати тваринку
+//Власники тварин - якось підтягнути тварин?
+//Якось додати пошук за власником
