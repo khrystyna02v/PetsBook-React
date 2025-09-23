@@ -1,0 +1,13 @@
+#page {
+    display: flex;
+    border: 1px solid;
+}
+#menu{
+    width:20%;
+    border: 1px solid;
+    background-color
+}
+#pets-page{
+    width:80%;
+    border: 1px solid;
+}
