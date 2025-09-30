@@ -2,13 +2,14 @@ import {animals} from './data-loading';
 import type { JSX } from 'react';
 import { Pet } from './Pet';
 import * as Func from './data-loading';
+import {PetInfoPage} from './PetInfo';
 
 type PetProps = {
   pet: Pet;
 };
 
 function Submenu (): JSX.Element {
-  const listItems: JSX.Element[] = animals.map(a => <li key={a}>{a}</li>);
+  const listItems: JSX.Element[] = Object.keys(animals).map(id => (<li key={id}><a href="#">{animals[Number(id)]}</a></li>));
   return (
     <ul id="submenu-list">{listItems}</ul>
   );
@@ -19,10 +20,10 @@ export function Menu(): JSX.Element {
       <section id="menu">
         <h1>Pets book</h1>
         <ul id="menu-list">
-            <li>Pets Catalog</li>
-            <li>By type:</li>
+            <li><a href="#">Pets Catalog</a></li>
+            <li><a href="#">By type:</a></li>
             <Submenu />
-            <li>Owners</li>
+            <li><a href="#">Owners</a></li>
         </ul>
       </section>
     );
@@ -30,7 +31,7 @@ export function Menu(): JSX.Element {
 
 function PetInCatalog( {pet}: PetProps): JSX.Element {
   return (
-    <div className="pet-in-catalog" id={"pet_" + pet.petId}>
+    <div className="pet-in-catalog" id={"pet_" + pet.petId} onClick={() => {localStorage.setItem("petId", pet.petId ? pet.petId.toString() : ""); window.location.href = "pet-info.html";}}>
       <img src={pet.photoPath || "default.png"} onError={(e) => { e.currentTarget.src = "default.png"; }} className="pet-img" alt={pet.name} />
       <h4>{pet.name}</h4>
       <p>{Func.getAnimalType(pet.animalTypeId)}</p>
@@ -67,11 +68,15 @@ function UploadPetInfo(): JSX.Element {
   //if (!petInfo.length) return <p>Pet not found.</p>;
   return (
     <div id="pet-information">
+      <h2>Beautiful {petInfo.name}</h2>
       <img src={petInfo.photoPath || "default.png"} onError={(e) => { e.currentTarget.src = "default.png"; }} className="pet-img" alt={petInfo.name}  />
-      <p>Name: {petInfo.name}</p>
-      <p>Breed: {Func.getAnimalType(petInfo.animalTypeId)}</p>
-      <p>Date of birth: {petInfo.dateOfBirth}</p>
-      <p>Owner: {petInfo.owner != undefined ? petInfo.owner.name + " " + petInfo.owner.surname : "No owner"}</p>
+      <div id="text-pet-info">
+        <p>Name: {petInfo.name}</p>
+        <p>Breed: {Func.getAnimalType(petInfo.animalTypeId)}</p>
+        <p>Date of birth: {petInfo.dateOfBirth?.split("T")[0]}</p>
+        <p>Owner: {petInfo.owner != undefined ? petInfo.owner.name + " " + petInfo.owner.surname : "No owner"}</p>
+        <p>{petInfo.owner != undefined ? (petInfo.owner.home != undefined ? `Home: ${petInfo.owner.home.street} ${petInfo.owner.home.building}${petInfo.owner.home.apartment != null ? "/"+petInfo.owner.home.apartment : ""}, ${petInfo.owner.home.city}, ${petInfo.owner.home.country}` : "") : ""}</p>
+      </div>
     </div>
   );
 }
@@ -81,16 +86,57 @@ export function PetInfoSection(): JSX.Element {
     <section id="pet-info-page">
       <div id="pet-info-section">
         <UploadPetInfo />
+        <button onClick={() => {window.location.href = "index.html";}}>Back to catalog</button>
+        <button onClick={() => {window.location.href = "owner-info.html";}}>Owner details</button>
+        <button onClick={() => {window.location.href = "edit-pet.html";}}>Edit pet</button>
       </div>
     </section>
   );
 }
 
-//function SwitchPage
+function SwitchPage(petId: number|undefined, ref: string): void {
+  localStorage.setItem("petId", petId ? petId.toString() : "");
+  window.location.href = ref;
+}
 
-//Сторінка тварини - інформація про неї
+export function EditPetSection(): JSX.Element {
+  const { petInfo, error, loading }:{ petInfo: Pet, error: string | null, loading: boolean } = Func.useFetchPetInfo();
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  const breeds: JSX.Element[] = Object.keys(animals).map(id => (
+    <option key={id} value={id}>
+      {animals[Number(id)]}
+    </option>
+  ));
+  localStorage.setItem("animalPhoto", petInfo.photoPath || "default.png");
+  localStorage.setItem("ownerId", petInfo.ownerId ? petInfo.ownerId.toString() : "");
+  return (
+    <section id="edit-pet-page">
+      <form id="editing-pet-form" onSubmit={Func.handleSubmit} encType="multipart/form-data">
+        <label>Name</label>
+        <input type='text' name='name' defaultValue={petInfo.name} required /><br/>
+        <label>Breed</label>
+        <select name="breed" defaultValue={petInfo.animalTypeId}>
+          {breeds}
+        </select> <br />
+        <label>Date of Birth</label>
+        <input type='date' name='dateOfBirth' defaultValue={petInfo.dateOfBirth?.split("T")[0]}/><br/>
+        <label>Owner</label>
+        <input type='text'/><br/>
+        <label>Photo</label>
+        <input type='file' name="photo" accept="image/*"/><br/>
+        <input type='reset'/>
+        <input type='submit' value='Save'/>
+        </form>
+    </section>
+  );
+}
+
 //Сторінки під кожен вид тварини
 //Форма додавати тваринку + аплоадити картинку
-//Форма щоб едітати тваринку
+//Додати owner та photo в едітанні тварини
+    //Форма щоб едітати тваринку
 //Власники тварин - якось підтягнути тварин?
 //Якось додати пошук за власником
+//Beautiful ... (pet) - змінити ободок бо негарний
+//Додати owner та photo в едітанні тварини

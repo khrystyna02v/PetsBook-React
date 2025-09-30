@@ -1,17 +1,13 @@
 import React from 'react';
 import { Pet } from './Pet';
 import { CONFIG } from './config';
-let dropdownOpened: boolean = false;
-export const animals: string[] = ["Cats", "Dogs", "Parrots", "Hamsters"];
+import type { FormEvent } from 'react';
+
+export const animals: Record<number, string> = { 1: "cat", 2: "dog", 3: "parrot", 4: "hamster" };
 
 export function getAnimalType(animalTypeId: number | undefined): string {
-    switch (animalTypeId) {
-        case 1: return "cat";
-        case 2: return "dog";
-        case 3: return "parrot";
-        case 4: return "hamster";
-        default: return "undefined";
-    }
+  if (animalTypeId === undefined) return "undefined";
+  return animals[animalTypeId] || "undefined";
 }
 
 export function useFetchPets(): {pets: Pet[], error: string | null, loading: boolean } {
@@ -51,7 +47,7 @@ export function useFetchPetInfo(): {petInfo:Pet, error: string | null, loading: 
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    fetch(`${CONFIG.apiUrl}/api/Pets/get-by-id?id=12`)
+    fetch(`${CONFIG.apiUrl}/api/Pets/get-by-id?id=${localStorage.getItem("petId")}`)
       .then(res => {
         if (!res.ok) throw new Error("HTTP error " + res.status);
         return res.json();
@@ -73,5 +69,60 @@ export function useFetchPetInfo(): {petInfo:Pet, error: string | null, loading: 
   return { petInfo, error, loading };
 }
 
-// localStorage.setItem("petId", petId);
- //${localStorage.getItem("petId")}
+export const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+  const selectedFile = (e.currentTarget.elements.namedItem('photo') as HTMLInputElement).files?.[0];
+  let photoUrl = localStorage.getItem("animalPhoto") || "default.png";
+
+  if (selectedFile) {
+    const formData = new FormData();
+    formData.append("photo", selectedFile);
+
+    const uploadRes = await fetch("http://localhost:5000/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!uploadRes.ok) throw new Error("Upload failed");
+    const uploadData = await uploadRes.json();
+    photoUrl = uploadData.url;
+  }
+
+  const editedPet = {
+  name: formData.get("name") as string,
+  animalTypeId: Number(formData.get("breed")),
+  dateOfBirth: formData.get("dateOfBirth") as string,
+  ownerId: localStorage.getItem("ownerId") ? Number(localStorage.getItem("ownerId")) : undefined,
+  photoPath: photoUrl
+  };
+
+    console.log(editedPet);
+    try {
+      const response = await fetch(`${CONFIG.apiUrl}/api/Pets/edit?petId=${localStorage.getItem("petId")}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(editedPet)
+      });
+
+      if (!response.ok) {
+        throw new Error("HTTP error " + response.status);
+      }
+
+      const text = await response.text();
+      try {
+        const data = text ? JSON.parse(text) : { message: "Updating completed" };
+        console.log(data);
+      } catch (e) {
+        console.warn("Edit response is not JSON, received:", text);
+      }
+
+      window.location.href = "pet-info.html";
+      
+    } catch (err) {
+      console.error("Update failed:", err);
+    }
+  };

@@ -20,7 +20,6 @@ html {
 #menu{
     width:20%;
     background-color: rgba(255, 255, 255, 0.6);
-    color: blueviolet
 }
 #menu h1 {    
     color: rgba(255, 255, 255, 0.8);
@@ -36,11 +35,17 @@ html {
     padding-left:10%;
     list-style: none;
 }
+#menu-list a, #submenu-list a {
+    color: blueviolet;
+    text-decoration: none;
+
+}
 #pets-page{
     width:80%;
     text-align:center;
 }
-#pets-page h2 {
+#pets-page h2, #pet-info-page h2 {
+    text-align:center;
     color: rgba(255, 255, 255, 0.8);
     -webkit-text-stroke: 1px rgb(242, 124, 255);
     font-size: 35px;
@@ -61,6 +66,7 @@ html {
     color:blueviolet;
     text-align:center;
     box-sizing: border-box;
+    cursor: pointer;
 } 
 .pet-in-catalog p {
     margin:0;
@@ -75,4 +81,31 @@ html {
     object-fit: cover;
     overflow: hidden;
     border-radius: 20px;
+}
+#pet-info-page {
+    width:80%;
+    text-align:center;
+    padding-bottom:30px;
+    display: flex;
+    justify-content: center;
+}
+#pet-info-section {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 10px;
+    width: 75%;
+}
+#pet-img {
+    margin: 0 auto;
+    display: block;
+}
+#pet-info-section button {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-image: linear-gradient(to left, rgb(242, 124, 255), rgb(213, 119, 251));
 }

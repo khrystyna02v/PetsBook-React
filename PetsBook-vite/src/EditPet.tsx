@@ -1,11 +1,11 @@
-import {Menu, PetInfoSection} from './react-functions';
+import {Menu, EditPetSection} from './react-functions';
 import ReactDOM from 'react-dom/client';
 import type { JSX } from 'react';
-export function PetInfoPage(): JSX.Element {
+export function EditPetPage(): JSX.Element {
   return (
     <div id="full-page" className="App">
     <Menu />
-    <PetInfoSection />
+    <EditPetSection />
     </div>
   );
 }
