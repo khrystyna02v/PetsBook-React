@@ -35,19 +35,28 @@ html {
     padding-left:10%;
     list-style: none;
 }
-#menu-list a, #submenu-list a {
+#menu-list a, #submenu-list li {
     color: blueviolet;
     text-decoration: none;
-
+    cursor: pointer;
+}
+#no-link-menu a{
+    cursor: default;
 }
 #pets-page{
     width:80%;
     text-align:center;
 }
-#pets-page h2, #pet-info-page h2 {
+#pets-page h2, #owners-page h2{
     text-align:center;
     color: rgba(255, 255, 255, 0.8);
     -webkit-text-stroke: 1px rgb(242, 124, 255);
+    font-size: 35px;
+}
+#pet-info-page h2 {
+    text-align:center;
+    color: rgba(255, 255, 255, 0.8);
+    -webkit-text-stroke: 1.5px rgb(193, 92, 255);
     font-size: 35px;
 }
 #pets-catalog{
@@ -68,6 +77,9 @@ html {
     box-sizing: border-box;
     cursor: pointer;
 } 
+.pet-in-catalog:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
 .pet-in-catalog p {
     margin:0;
 }
@@ -108,4 +120,50 @@ html {
     color: white;
     cursor: pointer;
     background-image: linear-gradient(to left, rgb(242, 124, 255), rgb(213, 119, 251));
+}
+
+#owners-page{
+    width:80%;
+    text-align:center;
+    padding-bottom:30px;
+}
+.person-in-catalog {
+    background-color: rgba(255, 255, 255, 0.7);
+    width: 60%;
+    cursor: pointer;
+    border-radius: 35px;
+	margin: 0 auto;
+	margin-bottom: 10px;
+	padding-left: 0;
+	display: flex;
+    justify-content: start;
+    min-width: 380px;
+}
+.person-in-catalog:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+.person-in-catalog-text p {
+    margin:0;
+    margin-left: 10px;
+    font-size: 20px;
+    color:rgb(242, 124, 255);
+}
+.person-in-catalog-text h4 {
+    margin:5px;
+    margin-top:13px;
+    font-size: 23px;
+    color:rgb(193, 92, 255);
+}
+.person-in-catalog img {
+    height: 60px;
+    width: 60px;
+    margin: 10px;
+	flex: 1;
+    object-fit: contain;
+    overflow: hidden;
+}
+.person-in-catalog-text {
+	flex: 7;
+	margin-left: 2%;
+	text-align: left;
 }

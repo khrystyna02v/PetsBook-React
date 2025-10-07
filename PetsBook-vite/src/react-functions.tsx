@@ -1,15 +1,18 @@
 import {animals} from './data-loading';
 import type { JSX } from 'react';
 import { Pet } from './Pet';
+import { Person } from './Person';
 import * as Func from './data-loading';
 import {PetInfoPage} from './PetInfo';
 
 type PetProps = {
   pet: Pet;
 };
-
+type PersonProps = {
+  person: Person;
+};
 function Submenu (): JSX.Element {
-  const listItems: JSX.Element[] = Object.keys(animals).map(id => (<li key={id}><a href="#">{animals[Number(id)]}</a></li>));
+  const listItems: JSX.Element[] = Object.keys(animals).map(id => (<li key={id} onClick={() => {localStorage.setItem("animalType", id); window.location.href="pets-by-animal-type.html"}}>{animals[Number(id)]}s</li>));
   return (
     <ul id="submenu-list">{listItems}</ul>
   );
@@ -20,10 +23,10 @@ export function Menu(): JSX.Element {
       <section id="menu">
         <h1>Pets book</h1>
         <ul id="menu-list">
-            <li><a href="#">Pets Catalog</a></li>
-            <li><a href="#">By type:</a></li>
+            <li><a href="index.html">Pets Catalog</a></li>
+            <li id="no-link-menu"><a href="#">By type:</a></li>
             <Submenu />
-            <li><a href="#">Owners</a></li>
+            <li><a href="owners.html">Owners</a></li>
         </ul>
       </section>
     );
@@ -35,6 +38,19 @@ function PetInCatalog( {pet}: PetProps): JSX.Element {
       <img src={pet.photoPath || "default.png"} onError={(e) => { e.currentTarget.src = "default.png"; }} className="pet-img" alt={pet.name} />
       <h4>{pet.name}</h4>
       <p>{Func.getAnimalType(pet.animalTypeId)}</p>
+    </div>
+  );
+}
+
+function PersonInCatalog( {person}: PersonProps): JSX.Element {
+  return (
+    <div className="person-in-catalog" id={"person_" + person.personId}> 
+      {/* onClick={() => {localStorage.setItem("petId", pet.petId ? pet.petId.toString() : ""); window.location.href = "pet-info.html";}}> */}
+      <img src="default-owner.png" alt={person.name+" "+person.surname} />
+      <div className="person-in-catalog-text">
+        <h4>{person.name} {person.surname}</h4>
+        <p>{person.phoneNumber}</p>
+      </div>
     </div>
   );
 }
@@ -53,11 +69,56 @@ function UploadPetsIntoCatalog(): JSX.Element {
   );
 }
 
+function UploadPetsByTypeIntoCatalog(): JSX.Element {
+  const animalType: number = Number(localStorage.getItem("animalType"));
+  const { pets, error, loading}: { pets: Pet[], error: string | null, loading: boolean } = Func.useFetchPetsByType(animalType);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!pets.length) return <p>No pets found</p>;
+  return (
+    <div id="pets-catalog">
+      {pets.map((p, idx) => (
+        <PetInCatalog pet={p} key={idx}/>
+      ))}
+    </div>
+  );
+}
+
+function UploadPeopleIntoCatalog(): JSX.Element {
+  const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = Func.useFetchPeople();
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!people.length) return <p>No owners found</p>;
+  return (
+    <div id="owners-catalog">
+      {people.map((p, idx) => (
+        <PersonInCatalog person={p} key={idx}/>
+      ))}
+    </div>
+  );
+}
+
 export function PetsCatalog(): JSX.Element  {
   return (
     <section id="pets-page">
       <h2>Beautiful pets</h2>
       <UploadPetsIntoCatalog />
+    </section>
+  );}
+
+  export function PetsByAnimalTypeCatalog(): JSX.Element  {
+  return (
+    <section id="pets-page">
+      <h2>Beautiful {animals[Number(localStorage.getItem("animalType"))]}s</h2>
+      <UploadPetsByTypeIntoCatalog />
+    </section>
+  );}
+
+export function OwnersCatalog(): JSX.Element  {
+  return (
+    <section id="owners-page">
+      <h2>Beautiful owners</h2>
+      <UploadPeopleIntoCatalog />
     </section>
   );}
 
@@ -132,11 +193,14 @@ export function EditPetSection(): JSX.Element {
   );
 }
 
-//Сторінки під кожен вид тварини
+//Змінити url під різні вкладки by-animal-type та pet-info
 //Форма додавати тваринку + аплоадити картинку
 //Додати owner та photo в едітанні тварини
-    //Форма щоб едітати тваринку
-//Власники тварин - якось підтягнути тварин?
+//Додати onClick та вікно з інформацією про owner-а
+//Сторінка з інформацією про власника + всі його тварини
+//Cтилі для сторінки про власників
+//Стилі для форми едітання тварини
 //Якось додати пошук за власником
-//Beautiful ... (pet) - змінити ободок бо негарний
-//Додати owner та photo в едітанні тварини
+//Навести порядок в файлах main- та тим що вони рендерять
+//Навести порядок в react-functions.tsx
+//Посортувати по папках
