@@ -13,6 +13,11 @@ html {
     background-image: linear-gradient(to top, rgb(255, 178, 243), rgb(193, 92, 255));
     font-family: 'Open Sans', sans-serif;
 }
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 #full-page {
     display: flex;
 }
@@ -53,7 +58,7 @@ html {
     -webkit-text-stroke: 1px rgb(242, 124, 255);
     font-size: 35px;
 }
-#pet-info-page h2 {
+#pet-info-page h2{
     text-align:center;
     color: rgba(255, 255, 255, 0.8);
     -webkit-text-stroke: 1.5px rgb(193, 92, 255);
@@ -112,7 +117,8 @@ html {
     margin: 0 auto;
     display: block;
 }
-#pet-info-section button {
+#pet-info-section button, .form_button {
+    font-size: 18px;
     margin: 10px;
     padding: 10px 20px;
     border: none;
@@ -120,6 +126,44 @@ html {
     color: white;
     cursor: pointer;
     background-image: linear-gradient(to left, rgb(242, 124, 255), rgb(213, 119, 251));
+}
+#editing-pet-form{
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 10px;
+    width: 60%;
+    text-align: left;
+    align-items: center;
+    padding-left:25%;
+    font-size:18px;
+    line-height: 1.6;
+}
+#edit-pet-page {
+    width:80%;
+    text-align:center;
+    padding-bottom:30px;
+    display: flex;
+    justify-content: center;
+}
+#header_form_label {
+    padding-bottom: 0;
+    margin: 0 auto;
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    -webkit-text-stroke: 1px rgb(242, 124, 255);
+    font-size: 35px;
+}
+.form_button{
+    margin-top: 35px;
+}
+input[type="text"], input[type="date"], select, input#file-upload-button {
+    border:solid rgb(213, 119, 251) 2px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius:5px;
+    height: 25px;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
 #owners-page{
