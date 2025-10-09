@@ -55,7 +55,12 @@ export function useFetchPetsByType(animalType: number): {pets: Pet[], error: str
   const [loading, setLoading] = React.useState<boolean>(true);
 
   React.useEffect(() => {
-    if (!animalType) return;
+    if (!animalType) {
+      setPets([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
     let mounted: boolean = true;
     fetch(`${CONFIG.apiUrl}/api/Pets/get-all-by-type?typeId=${animalType}`)
       .then(res => {
@@ -76,7 +81,44 @@ export function useFetchPetsByType(animalType: number): {pets: Pet[], error: str
         }
       });
     return () => { mounted = false; };
-  }, []);
+  }, [animalType]);
+  return { pets, error, loading };
+}
+
+export function useFetchPetsByOwner(ownerId: number): {pets: Pet[], error: string | null, loading: boolean } {
+  const [pets, setPets] = React.useState<Pet[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    if (!ownerId) {
+      setPets([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+    
+    let mounted: boolean = true;
+    fetch(`${CONFIG.apiUrl}/api/Pets/get-by-owner-id?id=${ownerId}`)
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.json();
+      })
+      .then(data => {
+        if (!mounted) return;
+        const list: Pet[] = data.pets || [];
+        setPets(list);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        if (mounted) {
+          setError(err.message || "Fetch error");
+          setLoading(false);
+        }
+      });
+    return () => { mounted = false; };
+  }, [ownerId]);
   return { pets, error, loading };
 }
 
@@ -109,6 +151,35 @@ export function useFetchPetInfo(id: number): {petInfo: Pet | null, error: string
   return { petInfo, error, loading };
 }
 
+export function useFetchOwnerInfo(name: String, surname: String): {personInfo: Person | null, error: string | null, loading: boolean} {
+  const [personInfo, setPersonInfo] = React.useState<Person | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    fetch(`${CONFIG.apiUrl}/api/PhoneBook/details?name=${name}&surname=${surname}`)
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.json();
+      })
+      .then(data => {
+        if (!mounted) return;
+        setPersonInfo(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        if (mounted) {
+          setError(err.message || "Fetch error");
+          setLoading(false);
+        }
+      });
+    return () => { mounted = false; };
+  }, [name, surname]);
+  return { personInfo, error, loading };
+}
+
 export function useFetchPeople(): {people: Person[], error: string | null, loading: boolean } {
   const [people, setPeople] = React.useState<Person[]>([]);
   const [error, setError] = React.useState<string | null>(null);
@@ -116,7 +187,7 @@ export function useFetchPeople(): {people: Person[], error: string | null, loadi
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    fetch(`${CONFIG.apiUrl}/api/PhoneBook/list`)
+    fetch(`${CONFIG.apiUrl}/api/Pets/owners-list`)
       .then(res => {
         if (!res.ok) throw new Error("HTTP error " + res.status);
         return res.json();
@@ -139,7 +210,7 @@ export function useFetchPeople(): {people: Person[], error: string | null, loadi
   return { people, error, loading };
 }
 
-export const handleSubmit = async (
+export const handleSubmitPet = async (
   e: FormEvent<HTMLFormElement>,
   petId: number,
   currentPhoto: string,
@@ -217,13 +288,55 @@ export const handleSubmit = async (
   }
 };
 
-//Ерори при едітанні тварини
-//Форма додавати тваринку + аплоадити картинку
-//Додати owner та photo в едітанні тварини
-//Додати onClick та вікно з інформацією про owner-а + всі його тварини
-//Cтилі для сторінки про власників
-//Стилі для форми едітання тварини
-//Якось додати пошук за власником
-//Навести порядок в react-functions.tsx
-//Переключення між вкладками з типами тварин - не відбувається
-//Забрати підкреслення в каталозі тварин
+export const handleSubmitPerson = async (
+  e: FormEvent<HTMLFormElement>,
+  name: string,
+  surname: string,
+  navigate: (path: string) => void
+): Promise<void> => {
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+
+  const editedPerson = {
+    name: (formData.get("name") as string) ?? "",
+    surname: (formData.get("surname") as string) ?? "",
+    phoneNumber: (formData.get("phone") as string) ?? "",
+    email: (formData.get("email") as string) ?? "",
+    dateOfBirth: (formData.get("dateOfBirth") as string) ?? ""
+  };
+
+  try {
+    const response = await fetch(`${CONFIG.apiUrl}/api/PhoneBook/edit?name=${name}&surname=${surname}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(editedPerson)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server error details:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        requestData: editedPerson
+      });
+      throw new Error(`Server error ${response.status}: ${errorText}`);
+    }
+
+    const text = await response.text();
+    try {
+      const data = text ? JSON.parse(text) : { message: "Updating completed" };
+      navigate(`/owners/${editedPerson.name}/${editedPerson.surname}`);
+    } catch (err) {
+      console.warn("Response is not JSON, received:", text);
+      navigate(`/owners/${editedPerson.name}/${editedPerson.surname}`);
+    }
+  } catch (err) {
+    console.error("Update failed:", err);
+    alert("Failed to update person: " + (err instanceof Error ? err.message : String(err)));
+  }
+};

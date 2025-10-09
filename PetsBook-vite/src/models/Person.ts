@@ -1,3 +1,4 @@
+import { Pet } from './Pet';
 export class Person {
   personId?: number;
   name?: string;
@@ -13,4 +14,5 @@ export class Person {
     building?: number;
     apartment?: number;
   };
+  pets?: Pet[] | null;
 }

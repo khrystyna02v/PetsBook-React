@@ -12,6 +12,7 @@ footer {
 html {
     background-image: linear-gradient(to top, rgb(255, 178, 243), rgb(193, 92, 255));
     font-family: 'Open Sans', sans-serif;
+    min-height: 100%;
 }
 a {
   text-decoration: none;
@@ -118,7 +119,7 @@ a {
     display: block;
 }
 #pet-info-section button, .form_button {
-    font-size: 18px;
+    font-size: 16px;
     margin: 10px;
     padding: 10px 20px;
     border: none;
@@ -127,7 +128,7 @@ a {
     cursor: pointer;
     background-image: linear-gradient(to left, rgb(242, 124, 255), rgb(213, 119, 251));
 }
-#editing-pet-form{
+#editing-pet-form, #editing-person-form{
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 20px;
     padding: 20px;
@@ -139,7 +140,7 @@ a {
     font-size:18px;
     line-height: 1.6;
 }
-#edit-pet-page {
+#edit-pet-page, #edit-person-page{
     width:80%;
     text-align:center;
     padding-bottom:30px;
@@ -157,7 +158,7 @@ a {
 .form_button{
     margin-top: 35px;
 }
-input[type="text"], input[type="date"], select, input#file-upload-button {
+input[type="text"], input[type="date"], input[type="phone"], input[type="email"], select {
     border:solid rgb(213, 119, 251) 2px;
     background-color: rgba(255, 255, 255, 0.7);
     border-radius:5px;
@@ -182,6 +183,12 @@ input[type="text"], input[type="date"], select, input#file-upload-button {
 	display: flex;
     justify-content: start;
     min-width: 380px;
+}
+.person-in-catalog-paws {
+    display: flex;
+    justify-content: start;
+    font-size: 25px;
+    color:#B501B7;
 }
 .person-in-catalog:hover {
     background-color: rgba(255, 255, 255, 0.9);
@@ -210,4 +217,44 @@ input[type="text"], input[type="date"], select, input#file-upload-button {
 	flex: 7;
 	margin-left: 2%;
 	text-align: left;
+}
+#pets-by-owner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+} 
+.pet-by-owner {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 20px;
+    padding-bottom:15px;
+    margin: 10px;
+    color:blueviolet;
+    text-align:center;
+    box-sizing: border-box;
+    cursor: pointer;
+} 
+.pet-by-owner:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.pet-by-owner p {
+    margin: 3px;
+}
+.pet-by-owner h4 {
+    margin-top: 10px;
+    margin-bottom: 7px;
+}
+.pet-by-owner-img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 20px;
+}
+#h2-person-name {
+    margin: 5px;
+}
+#pets-by-owner-title {
+    margin-bottom: 5px;
 }
