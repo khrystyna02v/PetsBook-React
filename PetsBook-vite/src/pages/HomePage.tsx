@@ -2,7 +2,11 @@ import {Menu} from '../components/react-functions';
 import type {JSX} from 'react';
 import {Pet} from '../models/Pet';
 import * as Func from '../components/data-loading';
-import {PetInCatalog} from '../components/react-functions';
+import {Link} from "react-router-dom";
+
+type PetProps = {
+  pet: Pet;
+};
 
 export function HomePage(): JSX.Element {
   return (
@@ -16,7 +20,14 @@ export function HomePage(): JSX.Element {
 function PetsCatalog(): JSX.Element  {
   return (
     <section id="pets-page">
-      <h2>Beautiful pets</h2>
+      <div id="button-header">
+        <div id="button-header-text">
+          <h2>Beautiful pets</h2>
+        </div>
+        <div id="create-pet-button-div">
+          <Link to={`/create-pet`}><button id='create-pet-button'>Add pet</button></Link>
+        </div>
+      </div>
       <UploadPetsIntoCatalog />
     </section>
 );}
@@ -32,5 +43,22 @@ function UploadPetsIntoCatalog(): JSX.Element {
         <PetInCatalog pet={p} key={idx}/>
       ))}
     </div>
+  );
+}
+
+export function PetInCatalog( {pet}: PetProps): JSX.Element {
+  return (
+    <Link to={`/pets/${pet.petId}`}>
+      <div className="pet-in-catalog" id={"pet_" + pet.petId}>
+        <img 
+        src={Func.getPhotoUrl(pet.photoPath)} 
+        onError={(e) => { e.currentTarget.src = "/default.png"; }} 
+        className="pet-img" 
+        alt={pet.name} 
+        />
+        <h4>{pet.name}</h4>
+        <p>{Func.getAnimalType(pet.animalTypeId)}</p>
+      </div>
+    </Link>
   );
 }

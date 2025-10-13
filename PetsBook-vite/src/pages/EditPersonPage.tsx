@@ -24,7 +24,7 @@ function EditPersonSection(name: string, surname: string): JSX.Element {
 
   return (
     <section id="edit-person-page">
-        <form id="editing-person-form" onSubmit={(e) =>Func.handleSubmitPerson(e, personInfo.name ?? "", personInfo.surname ?? "", navigate)} encType="multipart/form-data">
+        <form id="editing-person-form" onSubmit={(e) =>Func.handleSubmitPersonEdit(e, personInfo.name ?? "", personInfo.surname ?? "", navigate)} encType="multipart/form-data">
           <h2 id="header_form_label">Editing {personInfo ? personInfo.name : "person"}</h2><br/>
           <label>Name</label><br />
           <input type='text' name='name' defaultValue={personInfo ? personInfo.name : "name"} required /><br/>

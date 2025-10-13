@@ -3,7 +3,8 @@ import type { JSX } from 'react';
 import { useParams } from "react-router-dom";
 import * as Func from '../components/data-loading';
 import { Pet } from '../models/Pet';
-import { PetInCatalog } from '../components/react-functions';
+import { PetInCatalog } from './HomePage';
+import { Link } from "react-router-dom";
 
 export function PetsByTypePage(): JSX.Element {
   return (
@@ -18,7 +19,14 @@ export function PetsByAnimalTypeCatalog(): JSX.Element  {
     const {id} = useParams<{ id: string }>();
     return (
       <section id="pets-page">
-        <h2>Beautiful {Func.animals[Number(id)]}s</h2>
+        <div id="button-header">
+          <div id="button-header-text">
+            <h2>Beautiful {Func.animals[Number(id)]}s</h2>
+          </div>
+          <div id="create-pet-button-div">
+            <Link to={`/create-pet`}><button id='create-pet-button'>Add pet</button></Link>
+          </div>
+        </div>
         <UploadPetsByTypeIntoCatalog />
       </section>
 );}

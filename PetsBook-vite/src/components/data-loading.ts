@@ -1,9 +1,12 @@
 import React from 'react';
 import { Pet } from '../models/Pet';
 import { Person } from '../models/Person';
+import { Prediction } from '../models/Prediction';
 import { CONFIG } from '../config';
 import type { FormEvent } from 'react';
-import type { NavigateFunction } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import type { ChangeEvent } from 'react';
+
 
 export const animals: Record<number, string> = { 1: "cat", 2: "dog", 3: "parrot", 4: "hamster" };
 
@@ -210,7 +213,84 @@ export function useFetchPeople(): {people: Person[], error: string | null, loadi
   return { people, error, loading };
 }
 
-export const handleSubmitPet = async (
+export function useFetchPeopleByBeginning(beginning: string): {people: Person[], error: string | null, loading: boolean } {
+  const [people, setPeople] = React.useState<Person[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    if (!beginning) {
+      setPeople([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+    let mounted: boolean = true;
+    fetch(`${CONFIG.apiUrl}/api/PhoneBook/beginning?beginning=${beginning}`)
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.json();
+      })
+      .then(data => {
+        if (!mounted) return;
+        const unique: Person[] = data.names.concat(data.surnames).filter(
+          (person: Person, index: number, self: Person[]) =>
+            index === self.findIndex(
+              p => p.name === person.name && p.surname === person.surname
+            )
+        );
+        setPeople(unique);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        if (mounted) {
+          setError(err.message || "Fetch error");
+          setLoading(false);
+        }
+      });
+    return () => { mounted = false; };
+  }, [beginning]);
+  return { people, error, loading };
+}
+
+export function useFetchOriginPredictions(id: number): {predictions: Prediction[], error: string | null, loading: boolean } {
+  const [predictions, setPredictions] = React.useState<Prediction[]>([]);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    if (!id) {
+      setPredictions([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+    let mounted: boolean = true;
+    fetch(`${CONFIG.apiUrl}/api/CountryPrediction/pedict-country?id=${id}`)
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP error " + res.status);
+        return res.json();
+      })
+      .then(data => {
+        if (!mounted) return;
+        console.log(data);
+        setPredictions(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        if (mounted) {
+          setError(err.message || "Fetch error");
+          setLoading(false);
+        }
+      });
+    return () => { mounted = false; };
+  }, [id]);
+  return { predictions, error, loading };
+}
+
+export const handleSubmitPetEdit = async (
   e: FormEvent<HTMLFormElement>,
   petId: number,
   currentPhoto: string,
@@ -288,7 +368,84 @@ export const handleSubmitPet = async (
   }
 };
 
-export const handleSubmitPerson = async (
+export const handleSubmitPetCreate = async (
+  e: FormEvent<HTMLFormElement>,
+  navigate: (path: string) => void
+): Promise<void> => {
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+  const fileInput = e.currentTarget.elements.namedItem("photo") as HTMLInputElement | null;
+  const selectedFile = fileInput?.files?.[0] ?? null;
+
+  let photoUrl = "default.png";
+
+  if (selectedFile) {
+    const uploadForm = new FormData();
+    uploadForm.append("photo", selectedFile);
+
+    const uploadRes = await fetch(`${CONFIG.imageServerUrl}/upload`, {
+      method: "POST",
+      body: uploadForm
+    });
+
+    if (!uploadRes.ok) {
+      throw new Error("Upload failed: " + uploadRes.status);
+    }
+
+    const uploadData = await uploadRes.json().catch(() => null);
+    if (!uploadData || !uploadData.url) {
+      throw new Error("Upload response missing 'url'");
+    }
+    photoUrl = uploadData.url;
+  }
+
+  const editedPet = {
+    name: (formData.get("name") as string) ?? "",
+    animalTypeId: Number(formData.get("breed")),
+    dateOfBirth: (formData.get("dateOfBirth") as string) ?? "",
+    photoPath: photoUrl,
+    ownerId: Number(formData.get("ownerId")) || null
+  };
+
+  try {
+    const response = await fetch(`${CONFIG.apiUrl}/api/Pets/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(editedPet)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server error details:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        requestData: editedPet
+      });
+      throw new Error(`Server error ${response.status}: ${errorText}`);
+    }
+
+    const text = await response.text();
+    try {
+      const data = text ? JSON.parse(text) : { message: "Creating completed" };
+      navigate(`/`);
+      alert("Pet created successfully");
+    } catch (err) {
+      console.warn("Response is not JSON, received:", text);
+      navigate(`/`);
+      alert("Pet created successfully");
+    }
+  } catch (err) {
+    console.error("Creation failed:", err);
+    alert("Failed to create pet: " + (err instanceof Error ? err.message : String(err)));
+  }
+};
+
+export const handleSubmitPersonEdit = async (
   e: FormEvent<HTMLFormElement>,
   name: string,
   surname: string,
@@ -338,5 +495,56 @@ export const handleSubmitPerson = async (
   } catch (err) {
     console.error("Update failed:", err);
     alert("Failed to update person: " + (err instanceof Error ? err.message : String(err)));
+  }
+};
+
+export const handleSubmitPersonCreate = async (
+  e: FormEvent<HTMLFormElement>,
+  navigate: (path: string) => void
+): Promise<void> => {
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+
+  const createdPerson = {
+    name: (formData.get("name") as string) ?? "",
+    surname: (formData.get("surname") as string) ?? "",
+    phoneNumber: (formData.get("phone") as string) ?? "",
+    email: (formData.get("email") as string) ?? "",
+    dateOfBirth: (formData.get("dateOfBirth") as string) ?? ""
+  };
+
+  try {
+    const response = await fetch(`${CONFIG.apiUrl}/api/PhoneBook/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(createdPerson)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Server error details:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        requestData: createdPerson
+      });
+      throw new Error(`Server error ${response.status}: ${errorText}`);
+    }
+
+    const text = await response.text();
+    try {
+      const data = text ? JSON.parse(text) : { message: "Creating completed" };
+      navigate(`/owners/${createdPerson.name}/${createdPerson.surname}`);
+    } catch (err) {
+      console.warn("Response is not JSON, received:", text);
+      navigate(`/owners/${createdPerson.name}/${createdPerson.surname}`);
+    }
+  } catch (err) {
+    console.error("Creating failed:", err);
+    alert("Failed to create person: " + (err instanceof Error ? err.message : String(err)));
   }
 };

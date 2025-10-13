@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import * as Func from '../components/data-loading';
 import { Pet } from '../models/Pet';
 import { Person } from '../models/Person';
+import { Prediction } from '../models/Prediction';
 
 type PetProps = {
   pet: Pet;
@@ -30,9 +31,12 @@ export function OwnerInfoPage(): JSX.Element {
 function UploadOwnerInfo(name: String, surname: String): JSX.Element {
   const { personInfo, error: personError, loading: personLoading }:{ personInfo: Person | null, error: string | null, loading: boolean } = Func.useFetchOwnerInfo(name, surname);
   const { pets, error: petsError, loading: petsLoading }:{ pets: Pet[], error: string | null, loading: boolean } = Func.useFetchPetsByOwner(personInfo ? personInfo.personId || 1 : 1);
+  const { predictions, error: predictionsError, loading: predictionsLoading }:{ predictions: Prediction[] | null, error: string | null, loading: boolean } = Func.useFetchOriginPredictions(personInfo ? personInfo.personId || 1 : 1);
   if (personLoading) return <p>Loading person...</p>;
-  if (personError) return <p>Error loading owners: {personError}</p>;
+  if (personError) return <p>Error loading person: {personError}</p>;
   if (!personInfo) return <p>Person not found.</p>;
+  if (predictionsLoading) return <p>Loading origin predictions...</p>;
+  if (predictionsError) return <p>Error loading origin predictions: {predictionsError}</p>;
   if (petsLoading) return <p>Loading pets...</p>;
   if (petsError) return <p>Error loading pets: {petsError}</p>;
   return (
@@ -44,13 +48,19 @@ function UploadOwnerInfo(name: String, surname: String): JSX.Element {
         <p>Phone number: {personInfo.phoneNumber}</p>
         <p>{personInfo.email != undefined ? `Email: ${personInfo.email}` : ""}</p>
         <p>Date of birth: {personInfo.dateOfBirth?.split("T")[0]}</p>
-        <p>{personInfo.home != undefined ? `Home: ${personInfo.home.street} ${personInfo.home.building}${personInfo.home.apartment != null ? "/"+personInfo.home.apartment : ""}, ${personInfo.home.city}, ${personInfo.home.country}` : ""}</p>
+        <p>{personInfo.home != undefined ? `Home: ${personInfo.home.street} str. ${personInfo.home.building}${personInfo.home.apartment != null ? "/"+personInfo.home.apartment : ""}, ${personInfo.home.city}, ${personInfo.home.country}` : ""}</p>
         <p id="pets-by-owner-title">{pets.length > 0 ? `Pets:` : "No pets yet."}</p>
         <div id="pets-by-owner">
           {pets.map((p, idx) => (
             <PetByOwner pet={p} key={idx}/>
           ))}
         </div>
+        <p>{predictions.length > 0 ? `Predictions of origin (based on name):` : "Can not predict origin country"}</p>
+        <>
+          {predictions.map((prediction, idx) => (
+            <p key={idx}>{prediction.country_name} ({Math.round(prediction.probability ? prediction.probability*100 : 0)}%)</p>
+          ))}
+        </>
       </div>
     </div>
   );

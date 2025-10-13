@@ -1,12 +1,6 @@
 import {animals} from './data-loading';
 import type { JSX } from 'react';
-import { Pet } from '../models/Pet';
-import * as Func from './data-loading';
 import { Link } from "react-router-dom";
-
-type PetProps = {
-  pet: Pet;
-};
 
 function Submenu (): JSX.Element {
   const listItems: JSX.Element[] = Object.keys(animals).map(id => (<li key={id}><Link to={`/pets-by-type/${Number(id)}`}>{animals[Number(id)]}s</Link></li>));
@@ -29,25 +23,11 @@ export function Menu(): JSX.Element {
     );
 }
 
-export function PetInCatalog( {pet}: PetProps): JSX.Element {
-  return (
-    <Link to={`/pets/${pet.petId}`}>
-      <div className="pet-in-catalog" id={"pet_" + pet.petId}>
-        <img 
-        src={Func.getPhotoUrl(pet.photoPath)} 
-        onError={(e) => { e.currentTarget.src = "/default.png"; }} 
-        className="pet-img" 
-        alt={pet.name} 
-      />
-        <h4>{pet.name}</h4>
-        <p>{Func.getAnimalType(pet.animalTypeId)}</p>
-      </div>
-    </Link>
-  );
-}
 
+//Видалення тварини
+//Видалення людини
+//Обробка винятків при запитах
+//Пройтись по всіх файлах і додати типізацію TSX де її нема
 
-//Форма додавати тваринку + аплоадити картинку
 //Стилізувати кнопку для завантажування фото
 //API - переробити підтягування к-ті тварин в owners
-//Пошук за першими символами імені/прізвища owner-а

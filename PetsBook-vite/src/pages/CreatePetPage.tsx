@@ -1,26 +1,23 @@
 import {Menu} from '../components/react-functions';
 import type { JSX } from 'react';
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import * as Func from '../components/data-loading';
+import { Link } from "react-router-dom";
 
-export function EditPetPage(): JSX.Element {
-  const {id} = useParams<{ id: string }>();
+export function CreatePetPage(): JSX.Element {
   return (
     <div id="full-page" className="App">
     <Menu />
-    {EditPetSection(Number(id))}
+    <CreatePetSection />
     </div>
   );
 }
 
-function EditPetSection(id: number): JSX.Element {
+function CreatePetSection(): JSX.Element {
   const navigate = useNavigate();
-  const { petInfo, error: petError, loading: petLoading } = Func.useFetchPetInfo(id);
   const { people, error: peopleError, loading: peopleLoading } = Func.useFetchPeople();
   
-  if (petLoading || peopleLoading) return <p>Loading...</p>;
-  if (petError) return <p>Error loading pet: {petError}</p>;
+  if (peopleLoading) return <p>Loading...</p>;
   if (peopleError) return <p>Error loading owners list: {peopleError}</p>;
   
   const breeds: JSX.Element[] = Object.keys(Func.animals).map(id => (
@@ -36,24 +33,26 @@ function EditPetSection(id: number): JSX.Element {
     ))
   ];
   return (
-    <section id="edit-pet-page">
-        <form id="editing-pet-form" onSubmit={(e) =>Func.handleSubmitPetEdit(e, id, petInfo ? petInfo.photoPath || "default.png" : "default.png", navigate)} encType="multipart/form-data">
-          <h2 id="header_form_label">Editing {petInfo ? petInfo.name : "pet"}</h2><br/>
+    <section id="create-pet-page">
+        <form id="creating-pet-form" onSubmit={(e) =>Func.handleSubmitPetCreate(e, navigate)} encType="multipart/form-data">
+          <h2 id="header_form_label">Creating pet</h2><br/>
           <label>Name</label><br />
-          <input type='text' name='name' defaultValue={petInfo ? petInfo.name : "pet"} required /><br/>
+          <input type='text' name='name' placeholder="name" required /><br/>
           <label>Breed</label><br />
-          <select name="breed" defaultValue={petInfo ? petInfo.animalTypeId : 0}>
+          <select name="breed" defaultValue="placeholder" required>
+            <option value="placeholder" disabled hidden selected>Select breed</option>
             {breeds}
           </select> <br />
           <label>Date of Birth</label><br />
-          <input type='date' name='dateOfBirth' defaultValue={petInfo ? petInfo.dateOfBirth?.split("T")[0] : "unknown"}/><br/>
+          <input type='date' name='dateOfBirth' required/><br/>
           <label>Owner</label><br />
-          <select name='ownerId' defaultValue={petInfo?.ownerId || ''}>
+          <select name='ownerId' defaultValue="placeholder" required>
+            <option value="placeholder" disabled hidden selected>Select owner</option>
             {owners}
           </select><br/>
           <label>Photo</label><br />
           <input type='file' name="photo" accept="image/*"/><br/>
-          <input className="form_button" type='reset'/>
+          <Link to={`/`}><button className="form_button">Cancel</button></Link>
           <input className="form_button" type='submit' value='Save'/>
           </form>
     </section>
