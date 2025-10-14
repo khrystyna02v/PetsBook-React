@@ -1,8 +1,11 @@
-import {Menu} from '../components/react-functions';
+import {Menu} from '../components/Menu';
+import * as Handlers from '../components/handlers';
+import * as FetchFunctions from '../components/fetch-functions';
+import * as PetUtils from '../components/pet-utils';
 import type { JSX } from 'react';
 import { useNavigate } from "react-router-dom";
-import * as Func from '../components/data-loading';
 import { Link } from "react-router-dom";
+
 
 export function CreatePetPage(): JSX.Element {
   return (
@@ -15,14 +18,14 @@ export function CreatePetPage(): JSX.Element {
 
 function CreatePetSection(): JSX.Element {
   const navigate = useNavigate();
-  const { people, error: peopleError, loading: peopleLoading } = Func.useFetchPeople();
+  const { people, error: peopleError, loading: peopleLoading } = FetchFunctions.useFetchPeople();
   
   if (peopleLoading) return <p>Loading...</p>;
   if (peopleError) return <p>Error loading owners list: {peopleError}</p>;
   
-  const breeds: JSX.Element[] = Object.keys(Func.animals).map(id => (
+  const breeds: JSX.Element[] = Object.keys(PetUtils.animals).map(id => (
     <option key={"breed_"+id} value={id}>
-      {Func.animals[Number(id)]}
+      {PetUtils.animals[Number(id)]}
     </option>
   ));
   const owners: JSX.Element[] = [
@@ -34,10 +37,10 @@ function CreatePetSection(): JSX.Element {
   ];
   return (
     <section id="create-pet-page">
-        <form id="creating-pet-form" onSubmit={(e) =>Func.handleSubmitPetCreate(e, navigate)} encType="multipart/form-data">
+        <form id="creating-pet-form" onSubmit={(e) =>Handlers.handleSubmitPetCreate(e, navigate)} encType="multipart/form-data">
           <h2 id="header_form_label">Creating pet</h2><br/>
           <label>Name</label><br />
-          <input type='text' name='name' placeholder="name" required /><br/>
+          <input type='text' name='name' placeholder="Name" required /><br/>
           <label>Breed</label><br />
           <select name="breed" defaultValue="placeholder" required>
             <option value="placeholder" disabled hidden selected>Select breed</option>

@@ -1,7 +1,8 @@
-import {Menu} from '../components/react-functions';
+import {Menu} from '../components/Menu';
+import * as FetchFunctions from '../components/fetch-functions';
+import * as PetUtils from '../components/pet-utils';
 import type {JSX} from 'react';
 import {Pet} from '../models/Pet';
-import * as Func from '../components/data-loading';
 import {Link} from "react-router-dom";
 
 type PetProps = {
@@ -33,7 +34,7 @@ function PetsCatalog(): JSX.Element  {
 );}
 
 function UploadPetsIntoCatalog(): JSX.Element {
-  const { pets, error, loading}: { pets: Pet[], error: string | null, loading: boolean } = Func.useFetchPets();
+  const { pets, error, loading}: { pets: Pet[], error: string | null, loading: boolean } = FetchFunctions.useFetchPets();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!pets.length) return <p>No pets found</p>;
@@ -51,13 +52,13 @@ export function PetInCatalog( {pet}: PetProps): JSX.Element {
     <Link to={`/pets/${pet.petId}`}>
       <div className="pet-in-catalog" id={"pet_" + pet.petId}>
         <img 
-        src={Func.getPhotoUrl(pet.photoPath)} 
+        src={PetUtils.getPhotoUrl(pet.photoPath)} 
         onError={(e) => { e.currentTarget.src = "/default.png"; }} 
         className="pet-img" 
         alt={pet.name} 
         />
         <h4>{pet.name}</h4>
-        <p>{Func.getAnimalType(pet.animalTypeId)}</p>
+        <p>{PetUtils.getAnimalType(pet.animalTypeId)}</p>
       </div>
     </Link>
   );

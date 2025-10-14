@@ -1,4 +1,4 @@
-import {animals} from './data-loading';
+import {animals} from './pet-utils';
 import type { JSX } from 'react';
 import { Link } from "react-router-dom";
 
@@ -22,12 +22,3 @@ export function Menu(): JSX.Element {
       </section>
     );
 }
-
-
-//Видалення тварини
-//Видалення людини
-//Обробка винятків при запитах
-//Пройтись по всіх файлах і додати типізацію TSX де її нема
-
-//Стилізувати кнопку для завантажування фото
-//API - переробити підтягування к-ті тварин в owners

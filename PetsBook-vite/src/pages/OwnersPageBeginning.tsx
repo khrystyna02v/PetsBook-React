@@ -1,7 +1,9 @@
-import {Menu} from '../components/react-functions';
+import {Menu} from '../components/Menu';
+import * as Handlers from '../components/handlers';
+import * as FetchFunctions from '../components/fetch-functions';
+import * as PetUtils from '../components/pet-utils';
 import type { JSX } from 'react';
 import { Link } from "react-router-dom";
-import * as Func from '../components/data-loading';
 import { Person } from '../models/Person';
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -55,7 +57,7 @@ export function PersonSearchBoxBeginningPage(): JSX.Element {
 
 function UploadPeopleByBeginningIntoCatalog(): JSX.Element {
     const {beginning} = useParams<{ beginning: string }>();
-    const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = Func.useFetchPeopleByBeginning(String(beginning));
+    const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = FetchFunctions.useFetchPeopleByBeginning(String(beginning));
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Incorrect language or register</p>;
     if (!people.length) return (

@@ -1,7 +1,7 @@
-import {Menu} from '../components/react-functions';
+import {Menu} from '../components/Menu';
+import * as FetchFunctions from '../components/fetch-functions';
 import type { JSX } from 'react';
 import { Link } from "react-router-dom";
-import * as Func from '../components/data-loading';
 import { Person } from '../models/Person';
 import { useNavigate } from "react-router-dom";
 import type { ChangeEvent } from 'react';
@@ -57,7 +57,7 @@ export function PersonSearchBox(): JSX.Element {
 }
 
 function UploadPeopleIntoCatalog(): JSX.Element {
-  const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = Func.useFetchPeople();
+  const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = FetchFunctions.useFetchPeople();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!people.length) return <p>No owners found</p>;
