@@ -1,5 +1,5 @@
 import {Menu} from '../components/Menu';
-import * as FetchFunctions from '../components/fetch-functions';
+import * as FetchPeople from '../api-fetch-functions/fetch-people';
 import type { JSX } from 'react';
 import { Link } from "react-router-dom";
 import { Person } from '../models/Person';
@@ -57,7 +57,7 @@ export function PersonSearchBox(): JSX.Element {
 }
 
 function UploadPeopleIntoCatalog(): JSX.Element {
-  const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = FetchFunctions.useFetchPeople();
+  const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = FetchPeople.useFetchPeople();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!people.length) return <p>No owners found</p>;

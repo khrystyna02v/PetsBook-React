@@ -1,4 +1,4 @@
 export const CONFIG = {
-    apiUrl: '',  // Використовуємо відносний шлях для proxy
+    apiUrl: 'http://localhost:5159',
     imageServerUrl: 'http://localhost:5000'
 };

@@ -2,8 +2,15 @@ import {animals} from './pet-utils';
 import type { JSX } from 'react';
 import { Link } from "react-router-dom";
 
-function Submenu (): JSX.Element {
-  const listItems: JSX.Element[] = Object.keys(animals).map(id => (<li key={id}><Link to={`/pets-by-type/${Number(id)}`}>{animals[Number(id)]}s</Link></li>));
+function Submenu(): JSX.Element {
+  const listItems: JSX.Element[] = Object.keys(animals)
+  .filter(id => !isNaN(Number(id)))
+  .map(id => (
+    <li key={id}>
+      <Link to={`/pets-by-type/${Number(id)}`}>{animals[Number(id)]}s</Link>
+    </li>
+  ));
+  
   return (
     <ul id="submenu-list">{listItems}</ul>
   );

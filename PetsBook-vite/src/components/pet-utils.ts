@@ -1,7 +1,12 @@
 import { CONFIG } from '../config';
 
-export const animals: Record<number, string> = { 1: "cat", 2: "dog", 3: "parrot", 4: "hamster" };
-
+export enum animals{
+  cat = 1,
+  dog,
+  parrot,
+  hamster,
+  horse
+}
 export function getPhotoUrl(photoPath: string | undefined): string {
   if (!photoPath || photoPath === 'default.png') {
     return '/default.png';

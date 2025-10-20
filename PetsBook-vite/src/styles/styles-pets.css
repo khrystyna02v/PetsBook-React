@@ -1,0 +1,104 @@
+#pets-page{
+    width:80%;
+    text-align:center;
+}
+#pet-info-page h2{
+    text-align:center;
+    color: rgba(255, 255, 255, 0.8);
+    -webkit-text-stroke: 1.5px rgb(193, 92, 255);
+    font-size: 35px;
+}
+#pets-catalog{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom:30px;
+}
+.pet-in-catalog {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 20px;
+    padding-bottom:15px;
+    margin: 10px;
+    color:blueviolet;
+    text-align:center;
+    box-sizing: border-box;
+    cursor: pointer;
+} 
+.pet-in-catalog:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.pet-in-catalog p {
+    margin:0;
+}
+.pet-in-catalog h4 {
+    margin:5px;
+    margin-top:10px;
+}
+.pet-img {
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 20px;
+}
+#pet-info-page {
+    width:80%;
+    text-align:center;
+    padding-bottom:30px;
+    display: flex;
+    justify-content: center;
+}
+#pet-info-section {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 10px;
+    width: 75%;
+}
+#pet-img {
+    margin: 0 auto;
+    display: block;
+}
+
+#pets-by-owner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+} 
+.pet-by-owner {
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 20px;
+    padding-bottom:15px;
+    margin: 10px;
+    color:blueviolet;
+    text-align:center;
+    box-sizing: border-box;
+    cursor: pointer;
+} 
+.pet-by-owner:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+.pet-by-owner p {
+    margin: 3px;
+}
+.pet-by-owner h4 {
+    margin-top: 10px;
+    margin-bottom: 7px;
+}
+.pet-by-owner-img {
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    overflow: hidden;
+    border-radius: 20px;
+}
+#h2-person-name {
+    margin: 5px;
+}
+#pets-by-owner-title {
+    margin-bottom: 5px;
+}

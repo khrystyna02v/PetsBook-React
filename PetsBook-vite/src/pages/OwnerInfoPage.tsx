@@ -1,6 +1,8 @@
 import {Menu} from '../components/Menu';
-import * as Handlers from '../components/handlers';
-import * as FetchFunctions from '../components/fetch-functions';
+import * as PeopleHandler from '../button-handlers/buttonhandlers-people';
+import * as FetchPets from '../api-fetch-functions/fetch-pets';
+import * as FetchPeople from '../api-fetch-functions/fetch-people';
+import * as FetchPredictions from '../api-fetch-functions/fetch-predictions';
 import * as PetUtils from '../components/pet-utils';
 import { useParams, useNavigate } from "react-router-dom";
 import type { JSX } from 'react';
@@ -23,9 +25,9 @@ export function OwnerInfoPage(): JSX.Element {
   const {name, surname} = useParams<{ name: string, surname: string }>();
   const navigate = useNavigate();
 
-  const { personInfo, error: personError, loading: personLoading }:{ personInfo: Person | null, error: string | null, loading: boolean } = FetchFunctions.useFetchOwnerInfo(String(name), String(surname));
-  const { pets, error: petsError, loading: petsLoading }:{ pets: Pet[], error: string | null, loading: boolean } = FetchFunctions.useFetchPetsByOwner(personInfo ? personInfo.personId || 1 : 1);
-  const { predictions, error: predictionsError, loading: predictionsLoading }:{ predictions: Prediction[] | null, error: string | null, loading: boolean } = FetchFunctions.useFetchOriginPredictions(personInfo ? personInfo.personId || 1 : 1);
+  const { personInfo, error: personError, loading: personLoading }:{ personInfo: Person | null, error: string | null, loading: boolean } = FetchPeople.useFetchOwnerInfo(String(name), String(surname));
+  const { pets, error: petsError, loading: petsLoading }:{ pets: Pet[], error: string | null, loading: boolean } = FetchPets.useFetchPetsByOwner(personInfo ? personInfo.personId || 1 : 1);
+  const { predictions, error: predictionsError, loading: predictionsLoading }:{ predictions: Prediction[] | null, error: string | null, loading: boolean } = FetchPredictions.useFetchOriginPredictions(personInfo ? personInfo.personId || 1 : 1);
 
   const handleDelete = async () => {
     if (pets.length > 0) {
@@ -33,7 +35,7 @@ export function OwnerInfoPage(): JSX.Element {
       return;
     }
     if (window.confirm('Are you sure you want to delete this person?')) {
-      await Handlers.handleDeletePerson(String(name), String(surname), navigate);
+      await PeopleHandler.handleDeletePerson(String(name), String(surname), navigate);
     }
   };
 

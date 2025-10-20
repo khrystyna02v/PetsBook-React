@@ -24,8 +24,6 @@ export function App(): JSX.Element {
       <Route path="/owners/:beginning" element={<OwnersPageBeginning />} />
       <Route path="/edit-person/:name/:surname" element={<EditPersonPage />} />
       <Route path="/create-person" element={<CreatePersonPage />} />
-      {/* <Route path="/404" element={<NotFound />} />
-      <Route path="*" element={<Navigate to="/404" replace />} /> */}
     </Routes>
   );
 }

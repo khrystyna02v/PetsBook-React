@@ -1,5 +1,5 @@
 import {Menu} from '../components/Menu';
-import * as FetchFunctions from '../components/fetch-functions';
+import * as FetchPets from '../api-fetch-functions/fetch-pets';
 import * as PetUtils from '../components/pet-utils';
 import type {JSX} from 'react';
 import {Pet} from '../models/Pet';
@@ -34,7 +34,7 @@ function PetsCatalog(): JSX.Element  {
 );}
 
 function UploadPetsIntoCatalog(): JSX.Element {
-  const { pets, error, loading}: { pets: Pet[], error: string | null, loading: boolean } = FetchFunctions.useFetchPets();
+  const { pets, error, loading}: { pets: Pet[], error: string | null, loading: boolean } = FetchPets.useFetchPets();
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!pets.length) return <p>No pets found</p>;

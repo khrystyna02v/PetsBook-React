@@ -1,6 +1,6 @@
 import {Menu} from '../components/Menu';
-import * as Handlers from '../components/handlers';
-import * as FetchFunctions from '../components/fetch-functions';
+import * as PeopleHandler from '../button-handlers/buttonhandlers-people';
+import * as FetchPeople from '../api-fetch-functions/fetch-people';
 import type { JSX } from 'react';
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ export function EditPersonPage(): JSX.Element {
 
 function EditPersonSection(name: string, surname: string): JSX.Element {
   const navigate = useNavigate();
-  const { personInfo, error, loading } = FetchFunctions.useFetchOwnerInfo(name, surname);
+  const { personInfo, error, loading } = FetchPeople.useFetchOwnerInfo(name, surname);
   
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading: {error}</p>;
@@ -25,7 +25,7 @@ function EditPersonSection(name: string, surname: string): JSX.Element {
 
   return (
     <section id="edit-person-page">
-        <form id="editing-person-form" onSubmit={(e) =>Handlers.handleSubmitPersonEdit(e, personInfo.name ?? "", personInfo.surname ?? "", navigate)} encType="multipart/form-data">
+        <form id="editing-person-form" onSubmit={(e) =>PeopleHandler.handleSubmitPersonEdit(e, personInfo.name ?? "", personInfo.surname ?? "", navigate)} encType="multipart/form-data">
           <h2 id="header_form_label">Editing {personInfo ? personInfo.name : "person"}</h2><br/>
           <label>Name</label><br />
           <input type='text' name='name' defaultValue={personInfo ? personInfo.name : "name"} required /><br/>

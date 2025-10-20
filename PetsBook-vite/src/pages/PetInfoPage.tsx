@@ -1,6 +1,6 @@
 import {Menu} from '../components/Menu';
-import * as Handlers from '../components/handlers';
-import * as FetchFunctions from '../components/fetch-functions';
+import * as PetsHandler from '../button-handlers/buttonhandlers-pets';
+import * as FetchPets from '../api-fetch-functions/fetch-pets';
 import * as PetUtils from '../components/pet-utils';
 import { useParams } from "react-router-dom";
 import type { JSX } from 'react';
@@ -15,7 +15,7 @@ export function PetInfoPage(): JSX.Element {
   const navigate = useNavigate();
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this pet?')) {
-      await Handlers.handleDeletePet(Number(id), navigate);
+      await PetsHandler.handleDeletePet(Number(id), navigate);
     }
   };
   return (
@@ -35,7 +35,7 @@ export function PetInfoPage(): JSX.Element {
 }
 
 function UploadPetInfo(id: number): JSX.Element {
-  const { petInfo, error, loading }:{ petInfo: Pet | null, error: string | null, loading: boolean } = FetchFunctions.useFetchPetInfo(id);
+  const { petInfo, error, loading }:{ petInfo: Pet | null, error: string | null, loading: boolean } = FetchPets.useFetchPetInfo(id);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!petInfo) return <p>Pet not found.</p>;

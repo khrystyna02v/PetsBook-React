@@ -1,14 +1,11 @@
 import {Menu} from '../components/Menu';
-import * as Handlers from '../components/handlers';
-import * as FetchFunctions from '../components/fetch-functions';
-import * as PetUtils from '../components/pet-utils';
+import * as FetchPeople from '../api-fetch-functions/fetch-people';
 import type { JSX } from 'react';
 import { Link } from "react-router-dom";
 import { Person } from '../models/Person';
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import type { ChangeEvent } from 'react';
-import { useRef, useEffect } from 'react';
 
 type PersonProps = {
   person: Person;
@@ -26,7 +23,14 @@ export function OwnersPageBeginning(): JSX.Element {
 export function OwnersCatalogByBeginning(): JSX.Element  {
   return (
     <section id="owners-page">
-      <h2>Beautiful owners</h2>
+      <div id="button-header">
+        <div id="button-header-text">
+          <h2>Beautiful owners</h2>
+        </div>
+        <div id="create-person-button-div">
+          <Link to={`/create-person`}><button id='create-person-button'>Add person</button></Link>
+        </div>
+      </div>
       <PersonSearchBoxBeginningPage/>
       <UploadPeopleByBeginningIntoCatalog />
     </section>
@@ -57,7 +61,7 @@ export function PersonSearchBoxBeginningPage(): JSX.Element {
 
 function UploadPeopleByBeginningIntoCatalog(): JSX.Element {
     const {beginning} = useParams<{ beginning: string }>();
-    const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = FetchFunctions.useFetchPeopleByBeginning(String(beginning));
+    const { people, error, loading}: { people: Person[], error: string | null, loading: boolean } = FetchPeople.useFetchPeopleByBeginning(String(beginning));
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Incorrect language or register</p>;
     if (!people.length) return (

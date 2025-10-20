@@ -1,6 +1,7 @@
 import {Menu} from '../components/Menu';
-import * as Handlers from '../components/handlers';
-import * as FetchFunctions from '../components/fetch-functions';
+import * as PetsHandler from '../button-handlers/buttonhandlers-pets';
+import * as FetchPets from '../api-fetch-functions/fetch-pets';
+import * as FetchPeople from '../api-fetch-functions/fetch-people';
 import * as PetUtils from '../components/pet-utils';
 import type { JSX } from 'react';
 import { useParams } from "react-router-dom";
@@ -18,14 +19,16 @@ export function EditPetPage(): JSX.Element {
 
 function EditPetSection(id: number): JSX.Element {
   const navigate = useNavigate();
-  const { petInfo, error: petError, loading: petLoading } = FetchFunctions.useFetchPetInfo(id);
-  const { people, error: peopleError, loading: peopleLoading } = FetchFunctions.useFetchPeople();
+  const { petInfo, error: petError, loading: petLoading } = FetchPets.useFetchPetInfo(id);
+  const { people, error: peopleError, loading: peopleLoading } = FetchPeople.useFetchPeople();
   
   if (petLoading || peopleLoading) return <p>Loading...</p>;
   if (petError) return <p>Error loading pet: {petError}</p>;
   if (peopleError) return <p>Error loading owners list: {peopleError}</p>;
   
-  const breeds: JSX.Element[] = Object.keys(PetUtils.animals).map(id => (
+  const breeds: JSX.Element[] = Object.keys(PetUtils.animals)
+  .filter(id => !isNaN(Number(id)))
+  .map(id => (
     <option key={"breed_"+id} value={id}>
       {PetUtils.animals[Number(id)]}
     </option>
@@ -39,7 +42,7 @@ function EditPetSection(id: number): JSX.Element {
   ];
   return (
     <section id="edit-pet-page">
-        <form id="editing-pet-form" onSubmit={(e) =>Handlers.handleSubmitPetEdit(e, id, petInfo ? petInfo.photoPath || "default.png" : "default.png", navigate)} encType="multipart/form-data">
+        <form id="editing-pet-form" onSubmit={(e) =>PetsHandler.handleSubmitPetEdit(e, id, petInfo ? petInfo.photoPath || "default.png" : "default.png", navigate)} encType="multipart/form-data">
           <h2 id="header_form_label">Editing {petInfo ? petInfo.name : "pet"}</h2><br/>
           <label>Name</label><br />
           <input type='text' name='name' defaultValue={petInfo ? petInfo.name : "pet"} required /><br/>

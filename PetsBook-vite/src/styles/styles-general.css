@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+footer {
+	background-image: linear-gradient(to top, rgb(242, 124, 255), rgb(193, 92, 255));
+	color: rgb(255, 255, 255);
+    padding: 10px;
+    width:100%;
+    text-align: center;
+}
+html {
+    background-image: linear-gradient(to top, rgb(255, 178, 243), rgb(193, 92, 255));
+    font-family: 'Open Sans', sans-serif;
+    min-height: 100%;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#full-page {
+    display: flex;
+}
+
+#menu{
+    width:20%;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+#menu h1 {    
+    color: rgba(255, 255, 255, 0.8);
+    -webkit-text-stroke: 1px blueviolet;
+    font-size: 30px;
+    text-align:center;
+}
+#menu-list{
+    padding-left:20%;
+    list-style: none;
+}
+#submenu-list {
+    padding-left:10%;
+    list-style: none;
+}
+#menu-list a, #submenu-list li {
+    color: blueviolet;
+    text-decoration: none;
+    cursor: pointer;
+}
+#no-link-menu a{
+    cursor: default;
+}
